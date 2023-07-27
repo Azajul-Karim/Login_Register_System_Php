@@ -1,4 +1,9 @@
-<?php include "./inc/header.php"; ?>
+<?php
+include "./inc/header.php";
+Session::checkSession();
+
+
+?>
 <br>
 <div class="panel panel-default ">
   <div class="panel-heading">

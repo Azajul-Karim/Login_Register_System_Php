@@ -1,15 +1,28 @@
 <?php
 include "./inc/header.php";
 include "./lib/user.php";
-
+Session::checkSession();
 $user = new User();
-
 ?>
+<?php
+$loginmsg = Session::get("loginmsg");
 
+if (isset($loginmsg)) {
+  echo $loginmsg;
+}
+Session::set("loginmsg", NULL);
+?>
 <br>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h2>User List <span style="float: right;"><strong>Welcome!</strong> Md. Alamin</span></h2>
+    <h2>User List <span style="float: right;">Welcome
+        <?php
+        $username = Session::get("username");
+        if (isset($username)) {
+          echo ucfirst($username);
+        }
+        ?>
+      </span></h2>
   </div>
   <br>
   <div class="panel-body">

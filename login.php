@@ -1,6 +1,7 @@
 <?php
 include "./inc/header.php";
 include "./lib/user.php";
+Session::checkLogin();
 ?>
 <?php
 $user = new User();
