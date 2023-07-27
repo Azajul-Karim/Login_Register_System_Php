@@ -32,33 +32,38 @@ Session::set("loginmsg", NULL);
       <th width="20%">Username</th>
       <th width="20%">Email Address</th>
       <th width="20%">Action</th>
-      <tr>
-        <td>01</td>
-        <td>Md. Alamin</td>
-        <td>alamin</td>
-        <td>alamin@gmail.com</td>
-        <td>
-          <a class="btn btn-primary" href="profile.php?id=1">View</a>
-        </td>
-      </tr>
-      <tr>
-        <td>01</td>
-        <td>Md. Alamin</td>
-        <td>alamin</td>
-        <td>alamin@gmail.com</td>
-        <td>
-          <a class="btn btn-primary" href="profile.php?id=1">View</a>
-        </td>
-      </tr>
-      <tr>
-        <td>01</td>
-        <td>Md. Alamin</td>
-        <td>alamin</td>
-        <td>alamin@gmail.com</td>
-        <td>
-          <a class="btn btn-primary" href="profile.php?id=1">View</a>
-        </td>
-      </tr>
+      <?php
+      $userData = $user->getUserData();
+      if ($userData) {
+        $i = 0;
+        foreach ($userData as $sdata) {
+          $i++;
+      ?>
+          <tr>
+            <td>
+              <?php echo $i; ?>
+            </td>
+            <td>
+              <?php echo $sdata['name']; ?>
+            </td>
+            <td>
+              <?php echo $sdata['username']; ?>
+            </td>
+            <td>
+              <?php echo $sdata['email']; ?>
+            </td>
+            <td>
+              <a class="btn btn-primary" href="profile.php?id=<?php echo $sdata['id']; ?>">View</a>
+            </td>
+          </tr>
+        <?php }
+      } else { ?>
+        <tr>
+          <td colspan="5">
+            <h2>No User Data Found</h2>
+          </td>
+        </tr>
+      <?php } ?>
     </table>
   </div>
 </div>

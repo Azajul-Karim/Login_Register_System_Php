@@ -35,6 +35,11 @@ if (isset($_GET['action']) && $_GET['action'] == "logout") {
           if ($userlogin == true) {
           ?>
             <li class="nav-item">
+              <a class="nav-link active" href="index.php">
+                <h5>Home</h5>
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link active" href="profile.php?id=<?php echo $id; ?>">
                 <h5>Profile</h5>
               </a>

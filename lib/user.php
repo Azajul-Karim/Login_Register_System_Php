@@ -14,7 +14,8 @@ class User
     $name     = $data['name'];
     $username = $data['username'];
     $email    = $data['email'];
-    $password = md5($data['password']);
+
+    $password = $data['password'];
     $chk_email = $this->emailCheck($email);
 
     if ($name == "" || $username == "" || $email == "" || $password == "") {
@@ -39,7 +40,7 @@ class User
       $msg = "<div class='alert alert-danger'><strong>Error ! </strong>The email address already exist!</div>";
       return $msg;
     }
-
+    $password = md5($data['password']);
     $sql = "INSERT INTO tbl_user (name, username, email, password) VALUES (:name, :username, :email, :password)";
     $query = $this->db->pdo->prepare($sql);
     $query->bindValue(':name', $name);
@@ -114,6 +115,110 @@ class User
       header("Location: index.php");
     } else {
       $msg = "<div class='alert alert-danger'><strong>Error ! </strong>Data not found!</div>";
+      return $msg;
+    }
+  }
+
+  public function getUserData()
+  {
+    $sql = "SELECT * FROM tbl_user ORDER BY id DESC";
+    $query = $this->db->pdo->prepare($sql);
+    $query->execute();
+    $result = $query->fetchAll();
+    return $result;
+  }
+
+  public function getUserById($id)
+  {
+    $sql = "SELECT * FROM tbl_user WHERE id = :id LIMIT 1";
+    $query = $this->db->pdo->prepare($sql);
+    $query->bindValue(':id', $id);
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_OBJ);
+    return $result;
+  }
+
+  public function updateUserData($userid, $data)
+  {
+    $name     = $data['name'];
+    $username = $data['username'];
+    $email    = $data['email'];
+
+    if ($name == "" || $username == "" || $email == "") {
+      $msg = "<div class='alert alert-danger'><strong>Error ! </strong>Field must not be empty</div>";
+      return $msg;
+    }
+
+    $sql = "UPDATE tbl_user set
+            name     = :name,
+            username = :username,
+            email    = :email
+            WHERE id = :id";
+    $query = $this->db->pdo->prepare($sql);
+    $query->bindValue(':name', $name);
+    $query->bindValue(':username', $username);
+    $query->bindValue(':email', $email);
+    $query->bindValue(':id', $userid);
+    $result = $query->execute();
+
+    if ($result) {
+      $msg = "<div class='alert alert-success'><strong>Success ! </strong>User data updated successfully!</div>";
+      return $msg;
+    } else {
+      $msg = "<div class='alert alert-danger'><strong>Error ! </strong>User data not updated!</div>";
+      return $msg;
+    }
+  }
+
+  function checkPassword($id, $old_pass)
+  {
+    $password = md5($old_pass);
+    $sql = "SELECT password FROM tbl_user WHERE password = :password AND id = :id";
+    $query = $this->db->pdo->prepare($sql);
+    $query->bindValue(':password', $password);
+    $query->bindValue(':id', $id);
+    $query->execute();
+    if ($query->rowCount() > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  function updatePassword($id, $data)
+  {
+    $old_pass = $data['old_pass'];
+    $password = $data['password'];
+    $chk_pass = $this->checkPassword($id, $old_pass);
+
+    if ($old_pass == "" || $password == "") {
+      $msg = "<div class='alert alert-danger'><strong>Error ! </strong>Field must not be empty</div>";
+      return $msg;
+    }
+
+    if ($chk_pass == false) {
+      $msg = "<div class='alert alert-danger'><strong>Error ! </strong>Old password not exist!</div>";
+      return $msg;
+    }
+
+    if (strlen($password) < 6) {
+      $msg = "<div class='alert alert-danger'><strong>Error ! </strong>Password is too short</div>";
+      return $msg;
+    }
+
+    $password = md5($data['password']);
+    $sql = "UPDATE tbl_user set
+            password = :password
+            WHERE id = :id";
+    $query = $this->db->pdo->prepare($sql);
+    $query->bindValue(':password', $password);
+    $query->bindValue(':id', $id);
+    $result = $query->execute();
+
+    if ($result) {
+      $msg = "<div class='alert alert-success'><strong>Success ! </strong>Password updated successfully!</div>";
+      return $msg;
+    } else {
+      $msg = "<div class='alert alert-danger'><strong>Error ! </strong>Password not updated!</div>";
       return $msg;
     }
   }
